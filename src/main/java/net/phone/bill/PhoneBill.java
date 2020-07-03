@@ -1,5 +1,16 @@
 package net.phone.bill;
 
-public class PhoneBill {
+import net.phone.bill.billing.BillAction;
 
+public class PhoneBill {
+	
+	private double totalCost;
+	
+	public void accept(BillAction bill) {
+		totalCost += bill.totalCost();
+	}
+	
+	public double total() {
+		return totalCost;
+	}
 }
