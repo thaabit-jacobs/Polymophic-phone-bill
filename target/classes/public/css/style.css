@@ -159,7 +159,7 @@ cite, em {
 */
 
 a:hover{
-  color: #a9b2b9;
+  color: #648788;
 }
 
 a {
@@ -241,12 +241,12 @@ p a
 
 .btn {
   border-radius: 5px;
-  color: #fff;
+  color: #648880;
   cursor: pointer;
   display: inline-block;
   font-weight: 400;
   letter-spacing: .5px;
-  margin: 0;
+  margin: 10px 0 0 0;
   text-transform: uppercase;
 }
 

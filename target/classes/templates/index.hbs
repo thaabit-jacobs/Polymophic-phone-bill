@@ -27,8 +27,14 @@
                 <h3>Sms</h3>
 
             <form action="/" method="post">
-                <input type="number" name="smsCost">
+                <input type="number" name="smsCost" min="0.00" step="0.50">
+
+                <button class="btn btn-alt" name="submit">
+                    <strong>PURCHASE</strong>
+                </button>
             </form>
+
+
         </section><!--
 
 				Schedule
@@ -38,7 +44,11 @@
             <h3>Data</h3>
 
         <form action="/" method="post">
-            <input type="number" name="dataCost">
+            <input type="number" name="dataCost"  min="0.00" step="0.50">
+
+            <button class="btn btn-alt" name="submit">
+                <strong>PURCHASE</strong>
+            </button>
         </form>
     </section><!--
 
@@ -49,7 +59,11 @@
             <h3>Phone</h3>
 
         <form action="/" method="post">
-            <input type="number" name="phoneCost">
+            <input type="number" step="5" name="phoneCost" min="0.00" step="0.50">
+
+            <button class="btn btn-alt" name="submit">
+                <strong>PURCHASE</strong>
+            </button>
         </form>
     </section>
     </div>
