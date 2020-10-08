@@ -26,7 +26,7 @@ public class SmsBundle implements BillAction{
 		Formatter df2 = new Formatter();
 		
 		double totalCost = qty * price;
-		String doubleStr = df2.format("%.2f", totalCost).toString();
+		String doubleStr = df2.format("%.2f", totalCost).toString().replace(",", ".");
 		
 		df2.close();
 		

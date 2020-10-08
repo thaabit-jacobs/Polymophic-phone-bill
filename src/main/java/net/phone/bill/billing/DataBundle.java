@@ -4,9 +4,9 @@ import java.util.Formatter;
 
 public class DataBundle implements BillAction{
 	
-	private int data;
+	private double data;
 	
-	public DataBundle(int data) {
+	public DataBundle(double data) {
 		
 		if(data > 0)
 			this.data = data;
@@ -28,7 +28,7 @@ public class DataBundle implements BillAction{
 		}
 		
 		Formatter df2 = new Formatter();
-		String doubleStr = df2.format("%.2f", totalCost).toString();
+		String doubleStr = df2.format("%.2f", totalCost).toString().replace(",", ".");
 		
 		df2.close();
 		
