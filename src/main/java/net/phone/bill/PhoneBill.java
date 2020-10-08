@@ -58,7 +58,7 @@ public class PhoneBill {
 			String phoneCost = request.queryParams("phoneCost");
 
 			if(smsCost != null)
-				bill.accept(new SmsBundle(1, Double.parseDouble(smsCost)));
+				bill.accept(new SmsBundle(Double.valueOf(smsCost).intValue(), 0.25));
 			else if(dataCost != null)
 				bill.accept(new DataBundle(Double.parseDouble(dataCost)));
 			else
