@@ -42,6 +42,12 @@ public class PhoneBill {
 
 		PhoneBill bill = new PhoneBill();
 
+		Map<String, Double> map = new HashMap<>();
+
+		map.put("sms", 0.00);
+		map.put("data", 0.00);
+		map.put("phone", 0.00);
+
 		get("/", (request, response) -> {
 			Map<String, Object> model = new HashMap<>();
 			model.put("total", "R" + bill.total());
@@ -58,15 +64,48 @@ public class PhoneBill {
 			String phoneCost = request.queryParams("phoneCost");
 
 			if(smsCost != null)
-				bill.accept(new SmsBundle(Double.valueOf(smsCost).intValue(), 0.25));
+			{
+				BillAction purchase = new SmsBundle(Double.valueOf(smsCost).intValue(), 0.25);
+				bill.accept(purchase);
+
+				double currentCost = map.get("sms");
+				currentCost += purchase.totalCost();
+				map.put("sms", currentCost);
+			}
 			else if(dataCost != null)
-				bill.accept(new DataBundle(Double.parseDouble(dataCost)));
+			{
+				BillAction purchase = new DataBundle(Double.parseDouble(dataCost));
+				bill.accept(purchase);
+
+				double currentCost = map.get("data");
+				currentCost += purchase.totalCost();
+				map.put("data", currentCost);
+			}
 			else
-				bill.accept(new PhoneCall(Double.parseDouble(phoneCost)));
+			{
+				BillAction purchase = new PhoneCall(Double.parseDouble(phoneCost));
+				bill.accept(purchase);
+
+				double currentCost = map.get("phone");
+				currentCost += purchase.totalCost();
+				map.put("phone", currentCost);
+			}
+
 
 			model.put("total", "R" + bill.total());
 
 			return  render(model, "index.hbs");
+		});
+
+		get("/billing", (request, response) -> {
+			Map<String, Object> model = new HashMap<>();
+			//model.put("total", "R" + bill.total());
+
+			String dataArray = "[" + map.get("sms") + ", " + map.get("data") + ", " + map.get("phone") + "]";
+
+			model.put("data",  dataArray);
+
+			return  render(model, "chart.hbs");
 		});
 	}
 }
