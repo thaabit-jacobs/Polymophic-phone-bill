@@ -99,7 +99,6 @@ public class PhoneBill {
 
 		get("/billing", (request, response) -> {
 			Map<String, Object> model = new HashMap<>();
-			//model.put("total", "R" + bill.total());
 
 			String dataArray = "[" + map.get("sms") + ", " + map.get("data") + ", " + map.get("phone") + "]";
 

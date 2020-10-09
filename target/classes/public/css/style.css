@@ -57,6 +57,7 @@ body {
   background: #293f50;
   color: #888;
   font: 300 16px/22px "Lato","Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-align: center;
 }
 
 /*
@@ -187,7 +188,7 @@ p a
 }
 
 .total-col{
-    margin: 15px 0px 0px 5px;
+    margin: 35px 0px 0px 5px;
 }
 
 .total-col p{
@@ -295,6 +296,18 @@ p a
 .logo {
   border-top: 4px solid #648880;
   float: left;
+  font-size: 48px;
+  font-weight: 100;
+  letter-spacing: 0.5px;
+  line-height: 44px;
+  padding: 40px 0 22px 0;
+  text-transform: uppercase;
+
+}
+
+.logo-bill {
+  border-top: 4px solid #648880;
+  float: right;
   font-size: 48px;
   font-weight: 100;
   letter-spacing: 0.5px;
