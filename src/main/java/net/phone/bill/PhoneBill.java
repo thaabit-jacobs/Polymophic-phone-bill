@@ -106,5 +106,15 @@ public class PhoneBill {
 
 			return  render(model, "chart.hbs");
 		});
+
+		get("/reset", (request, response) -> {
+			Map<String, Object> model = new HashMap<>();
+
+			
+
+			return  render(model, "reset.hbs");
+		});
+
+
 	}
 }

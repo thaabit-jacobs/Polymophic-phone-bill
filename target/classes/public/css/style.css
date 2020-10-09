@@ -244,6 +244,20 @@ p a
     height: auto;
 }
 
+.alert {
+background:#293f50;
+color:#fff;
+    border: 5px solid #cbe2c1;
+    border-radius: 5px;
+    padding-top: 5px;
+}
+
+.alert p{
+    padding-top: 15px;
+    font-size: 35px;
+    font-weight: bold;
+}
+
 /*
   ========================================
   Buttons
