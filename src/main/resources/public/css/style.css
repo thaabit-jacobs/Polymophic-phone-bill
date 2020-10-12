@@ -273,6 +273,7 @@ color:#fff;
   letter-spacing: .5px;
   margin: 10px 0 0 0;
   text-transform: uppercase;
+  padding: 0px 20px 0 20px;
 }
 
 .btn-alt{
@@ -301,6 +302,11 @@ color:#fff;
   font-weight: 100;
 }
 
+.btn-hero{
+  margin-right: 15px;
+  margin-bottom: 22px;
+}
+
 /*
   ========================================
   Primary header
@@ -319,6 +325,7 @@ color:#fff;
 
 }
 
+/*
 .logo-bill {
   border-top: 4px solid #648880;
   float: right;
@@ -330,6 +337,7 @@ color:#fff;
   text-transform: uppercase;
 
 }
+*/
 
 /*
   ========================================
@@ -357,6 +365,7 @@ color:#fff;
 
 .nav {
   text-align: right;
+  margin-top: 122px;
 }
 
 
@@ -367,6 +376,7 @@ color:#fff;
   text-transform: uppercase;
 }
 
+/*
 .nav li {
     display: inline-block;
     margin: 0 10px;
@@ -376,6 +386,7 @@ color:#fff;
 .nav li:last-child {
     margin-right:0;
 }
+*/
 
 /*
   ========================================

@@ -6,9 +6,14 @@ import net.phone.bill.billing.PhoneCall;
 import net.phone.bill.billing.SmsBundle;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import net.phone.bill.beneficiary.*;
+
 
 public class BillResources {
 
@@ -16,13 +21,16 @@ public class BillResources {
 
     private PreparedStatement pstmt;
     private Statement stmt;
-
-    private final String addSmsQuery = "INSERT INTO sms(price) VALUES(?)";
-    private final String addDataQuery = "INSERT INTO data(price) VALUES(?)";
-    private final String addPhoneQuery = "INSERT INTO phone(price) VALUES(?)";
-    private final String clearSmsQuery = "DELETE FROM sms";
-    private final String clearDataQuery = "DELETE FROM data";
-    private final String clearPhoneQuery = "DELETE FROM phone";
+    private ResultSet rs;
+    
+    private final String addBenQuery = "INSERT INTO beneficiaries(name, number, sms_total, data_total, phone_total, total_bill) values(?, ?, ?, ?, ?, ?)";
+    private final String clearBenTableQuery = "DELETE FROM beneficiaries";
+    private final String updateSmsQuery = "UPDATE beneficiaries SET sms_total = ? WHERE name = ?";
+    private final String  updateDataQuery = "UPDATE beneficiaries SET data_total = ? WHERE name = ?";
+    private final String  updatePhoneQuery = "UPDATE beneficiaries SET phone_total = ? WHERE name = ?";
+    private final String  updateTotalBillQuery = "UPDATE beneficiaries SET total_bill = ? WHERE name = ?";
+    private final String  deleteBenefiaciaryQuery = "DELETE FROM beneficiaries WHERE name = ?";
+    private final String  benefiaciariesQuery = "SELECT * FROM beneficiaries WHERE name = ?";
 
     public BillResources(Connection connection) {
         try {
@@ -35,69 +43,232 @@ public class BillResources {
         this.connection = connection;
     }
 
-    public void addSms(SmsBundle s)
+    public double getSmsTotal(Beneficiary ben)
     {
         try
         {
-            pstmt = connection.prepareStatement(addSmsQuery);
+            pstmt = connection.prepareStatement(benefiaciariesQuery);
+            pstmt.setString(1, ben.getName());
+            rs = pstmt.executeQuery();
+            rs.next();
 
-            pstmt.setDouble(1, s.totalCost());
-            pstmt.executeUpdate();
+            double smsTotal = rs.getDouble("sms_total");
+
+            rs.close();
             pstmt.close();
-        } catch(SQLException se)
-        {
-            System.out.println(se + " : Could not add sms price");
+
+            return smsTotal;
+        } catch(SQLException se){
+            System.out.println("Could not returb sms total");
             se.printStackTrace();
         }
+
+        return 0;
     }
 
-    public void addData(DataBundle d)
+    public double getDataTotal(Beneficiary ben)
     {
         try
         {
-            pstmt = connection.prepareStatement(addSmsQuery);
+            pstmt = connection.prepareStatement(benefiaciariesQuery);
+            pstmt.setString(1, ben.getName());
+            rs = pstmt.executeQuery();
+            rs.next();
 
-            pstmt.setDouble(1, d.totalCost());
-            pstmt.executeUpdate();
+            double dataTotal = rs.getDouble("data_total");
+            
+            rs.close();
             pstmt.close();
-        } catch(SQLException se)
-        {
-            System.out.println(se + " : Could not add data price");
+
+            return dataTotal;
+        } catch(SQLException se){
+            System.out.println("Could not returb data total");
             se.printStackTrace();
         }
+
+        return 0;
     }
 
-    public void addPhone(PhoneCall p)
+    public double getPhoneTotal(Beneficiary ben)
     {
         try
         {
-            pstmt = connection.prepareStatement(addPhoneQuery);
+            pstmt = connection.prepareStatement(benefiaciariesQuery);
+            pstmt.setString(1, ben.getName());
+            rs = pstmt.executeQuery();
+            rs.next();
 
-            pstmt.setDouble(1, p.totalCost());
-            pstmt.executeUpdate();
+            double phoneTotal = rs.getDouble("phone_total");
+            
+            rs.close();
             pstmt.close();
-        } catch(SQLException se)
-        {
-            System.out.println(se + " : Could not add phone price");
+
+            return phoneTotal;
+        } catch(SQLException se){
+            System.out.println("Could not returb phone total");
             se.printStackTrace();
         }
+
+        return 0;
     }
 
-    public void clearTables()
+        public double getBillTotal(Beneficiary ben)
     {
         try
         {
+            pstmt = connection.prepareStatement(benefiaciariesQuery);
+            pstmt.setString(1, ben.getName());
+            rs = pstmt.executeQuery();
+            rs.next();
+
+            double billTotal = rs.getDouble("total_bill");
+            
+            rs.close();
+            pstmt.close();
+
+            return billTotal;
+        } catch(SQLException se){
+            System.out.println("Could not returb billTotal total");
+            se.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public boolean addBeneficiary(Beneficiary ben)
+    {
+        try{
+            pstmt = connection.prepareStatement(addBenQuery);
+            pstmt.setString(1, ben.getName());
+            pstmt.setString(2, ben.getNumber());
+            pstmt.setDouble(3, ben.getSmsTotal());
+            pstmt.setDouble(4, ben.getDataTotal());
+            pstmt.setDouble(5, ben.getPhoneTotal());
+            pstmt.setDouble(6, ben.getBillTotal());
+            pstmt.executeUpdate();
+            pstmt.close();
+            return true;
+        } catch(SQLException se){
+            System.out.println("n the catch");
+            System.out.println("Could not add user");
+            se.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public double updateSmsTotal(Beneficiary ben)
+    {
+        double updatedSmsTotal = ben.getSmsTotal();
+        try{
+            pstmt = connection.prepareStatement(updateSmsQuery);
+            pstmt.setDouble(1, ben.getSmsTotal());
+            pstmt.setString(2, ben.getName());
+            pstmt.executeUpdate();
+            pstmt.close();
+            return updatedSmsTotal;
+        } catch(SQLException se){
+            System.out.println("n the catch");
+            System.out.println("Could not add user");
+            se.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public double updateDataTotal(Beneficiary ben)
+    {
+        double updatedDataTotal = ben.getDataTotal();
+
+        try{
+            pstmt = connection.prepareStatement(updateDataQuery);
+            pstmt.setDouble(1, ben.getDataTotal());
+            pstmt.setString(2, ben.getName());
+            pstmt.executeUpdate();
+            pstmt.close();
+            return updatedDataTotal;
+        } catch(SQLException se){
+            System.out.println("n the catch");
+            System.out.println("Could not add user");
+            se.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public double updatePhoneTotal(Beneficiary ben)
+    {
+        double updatedPhoneTotal = ben.getPhoneTotal();
+
+        try{
+            pstmt = connection.prepareStatement(updatePhoneQuery);
+            pstmt.setDouble(1, ben.getPhoneTotal());
+            pstmt.setString(2, ben.getName());
+            pstmt.executeUpdate();
+            pstmt.close();
+            return updatedPhoneTotal;
+        } catch(SQLException se){
+            System.out.println("n the catch");
+            System.out.println("Could not add user");
+            se.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public double updateBillTotal(Beneficiary ben)
+    {
+        double updatedBillTotal = ben.getBillTotal();
+
+        try{
+            pstmt = connection.prepareStatement(updateTotalBillQuery);
+            pstmt.setDouble(1, ben.getBillTotal());
+            pstmt.setString(2, ben.getName());
+            pstmt.executeUpdate();
+            pstmt.close();
+            return updatedBillTotal;
+        } catch(SQLException se){
+            System.out.println("n the catch");
+            System.out.println("Could not add user");
+            se.printStackTrace();
+        }
+
+        return 0;
+        
+    }
+
+        public boolean deleteBenficiary(Beneficiary ben)
+    {
+        try{
+            pstmt = connection.prepareStatement(deleteBenefiaciaryQuery);
+            pstmt.setString(1, ben.getName());
+            pstmt.executeUpdate();
+            pstmt.close();
+            return true;
+        } catch(SQLException se){
+            System.out.println("n the catch");
+            System.out.println("Could not add user");
+            se.printStackTrace();
+        }
+
+        return false;
+        
+    }
+
+    public boolean clearBenTable(){
+        try{
             stmt = connection.createStatement();
-            stmt.execute(clearDataQuery);
-            stmt.execute(clearPhoneQuery);
-            stmt.execute(clearSmsQuery);
+            stmt.executeUpdate(clearBenTableQuery);
             stmt.close();
 
-        }catch(SQLException se)
-        {
-            System.out.println(se + " : Could not clear tables");
+            return true;
+        } catch(SQLException se){
+            System.out.println("n the catch");
+            System.out.println("Could not add user");
             se.printStackTrace();
         }
+
+        return false;
     }
 
 }

@@ -1,0 +1,1 @@
+alter table beneficiaries add number text;

@@ -271,9 +271,9 @@ color:#fff;
   display: inline-block;
   font-weight: 400;
   letter-spacing: .5px;
-  margin: 10px 0 0 0;
+  margin: 0 0 0 0;
   text-transform: uppercase;
-  padding: 0px 20px 0 20px;
+  padding: 0px 0px 0px 0px;
 }
 
 .btn-alt{
@@ -281,10 +281,23 @@ color:#fff;
   padding: 10px 30px;
 }
 
+.btn-ben{
+  border: 1px solid #648880;
+  padding: 5px 30px 5px 30px;
+  margin-bottom: 15px;
+}
+
 .btn-alt:hover{
   background: #fff;
   color: #648880;
 }
+
+.btn-ben:hover{
+  background: #648880;;
+  color: #fff;
+}
+
+
 
 .hero {
   color: #fff;
@@ -320,7 +333,7 @@ color:#fff;
   font-weight: 100;
   letter-spacing: 0.5px;
   line-height: 44px;
-  padding: 40px 0 22px 0;
+  padding: 40px 0 12px 0;
   text-transform: uppercase;
 
 }
@@ -364,7 +377,7 @@ color:#fff;
 */
 
 .nav {
-  text-align: right;
+  text-align: center;
   margin-top: 122px;
 }
 
@@ -374,6 +387,10 @@ color:#fff;
   font-weight: 400;
   letter-spacing: .5px;
   text-transform: uppercase;
+}
+
+.ben-nav{
+  margin-top: 0;
 }
 
 /*
@@ -419,4 +436,13 @@ color:#fff;
 
 .speak{
 	margin-bottom: 44px;
+}
+
+#ben-name{
+ font-weight: bold;
+ font-size: 24px;
+}
+
+.grid h2 {
+  font-size: 30px;
 }

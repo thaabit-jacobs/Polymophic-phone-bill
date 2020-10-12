@@ -2,8 +2,10 @@ package net.phone.bill;
 
 import net.phone.bill.billing.BillAction;
 
+import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.phone.bill.billing.DataBundle;
@@ -107,14 +109,17 @@ public class PhoneBill {
 			return  render(model, "chart.hbs");
 		});
 
-		get("/reset", (request, response) -> {
+		get("/dashboard", (request, response) -> {
 			Map<String, Object> model = new HashMap<>();
 
-			
+			List<String> beneficiaries = new ArrayList<>();
+			beneficiaries.add("Thaabit");
+			beneficiaries.add("Ayapha");
 
-			return  render(model, "reset.hbs");
+			model.put("greeted", beneficiaries);
+
+			return  render(model, "dashboard.hbs");
 		});
-
 
 	}
 }
