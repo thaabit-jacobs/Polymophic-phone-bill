@@ -11,6 +11,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.phone.bill.beneficiary.*;
 
@@ -31,6 +33,7 @@ public class BillResources {
     private final String  updateTotalBillQuery = "UPDATE beneficiaries SET total_bill = ? WHERE name = ?";
     private final String  deleteBenefiaciaryQuery = "DELETE FROM beneficiaries WHERE name = ?";
     private final String  benefiaciariesQuery = "SELECT * FROM beneficiaries WHERE name = ?";
+    private final String  getAllBenQuery = "SELECT * FROM beneficiaries";
 
     public BillResources(Connection connection) {
         try {
@@ -41,6 +44,63 @@ public class BillResources {
         }
 
         this.connection = connection;
+    }
+
+    public Beneficiary getBeneficiary(String name){
+        Beneficiary ben = null;
+
+        try{
+            pstmt = connection.prepareStatement(benefiaciariesQuery);
+            pstmt.setString(1, name);
+
+            rs = pstmt.executeQuery();
+            rs.next();
+
+            ben = new Beneficiary(name, rs.getString("number"));
+            ben.setSmsTotal(rs.getDouble("sms_total"));
+            ben.setDataTotal(rs.getDouble("data_total"));
+            ben.setPhoneTotal(rs.getDouble("phone_total"));
+            ben.setBillTotal(rs.getDouble("total_bill"));
+            rs.close();
+
+            return ben;
+        }catch(SQLException se){
+            System.out.println("Could not return benefiaiciry");
+            se.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public ArrayList<Beneficiary> getAllBeneficiary(){
+        ArrayList<Beneficiary> list  = new ArrayList<>();
+        Beneficiary ben = null;
+
+        try{
+
+            stmt = connection.createStatement();
+            rs = stmt.executeQuery(getAllBenQuery);
+
+            while(rs.next()){
+                ben = new Beneficiary(rs.getString("name"), rs.getString("number"));
+                ben.setSmsTotal(rs.getDouble("sms_total"));
+                ben.setDataTotal(rs.getDouble("data_total"));
+                ben.setPhoneTotal(rs.getDouble("phone_total"));
+                ben.setBillTotal(rs.getDouble("total_bill"));
+
+                list.add(ben);
+            };
+
+            stmt.close();
+            rs.close();
+
+            return list;
+        }catch(SQLException se){
+            System.out.println("Could not return all beneficiaries");
+            se.printStackTrace();
+        }
+
+        return list;
     }
 
     public double getSmsTotal(Beneficiary ben)

@@ -1,7 +1,10 @@
 package net.phone.bill;
 
+import net.phone.bill.beneficiary.Beneficiary;
 import net.phone.bill.billing.BillAction;
 
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.HashMap;
@@ -11,6 +14,7 @@ import java.util.Map;
 import net.phone.bill.billing.DataBundle;
 import net.phone.bill.billing.PhoneCall;
 import net.phone.bill.billing.SmsBundle;
+import net.phone.bill.db.BillResources;
 import spark.ModelAndView;
 import spark.template.handlebars.HandlebarsTemplateEngine;
 
@@ -38,11 +42,20 @@ public class PhoneBill {
 		return new HandlebarsTemplateEngine().render(new ModelAndView(model, hbsPath));
 	}
 
-	public static void main(String[] args)
-	{
+	public static void main(String[] args) throws SQLException {
 		staticFiles.location("/public");
 
 		PhoneBill bill = new PhoneBill();
+		BillResources br = new BillResources(DriverManager.getConnection("jdbc:postgresql://localhost:5432/biller", "thaabit", "1234"));
+
+		try{
+			Class.forName("org.postgresql.Driver");
+
+		}catch(Exception e)
+		{
+			System.out.println("Test constructor");
+			e.printStackTrace();
+		}
 
 		Map<String, Double> map = new HashMap<>();
 
@@ -112,13 +125,101 @@ public class PhoneBill {
 		get("/dashboard", (request, response) -> {
 			Map<String, Object> model = new HashMap<>();
 
-			List<String> beneficiaries = new ArrayList<>();
-			beneficiaries.add("Thaabit");
-			beneficiaries.add("Ayapha");
+			ArrayList<String> benNameList = new ArrayList<>();
+			ArrayList<Beneficiary> beneficiaries = br.getAllBeneficiary();
 
-			model.put("greeted", beneficiaries);
+			for(Beneficiary b: beneficiaries)
+				benNameList.add(b.getName() + " : " + b.getNumber());
+
+			model.put("greeted", benNameList);
 
 			return  render(model, "dashboard.hbs");
+		});
+
+		post("/dashboard", (request, response) -> {
+			Map<String, Object> model = new HashMap<>();
+
+			ArrayList<String> benNameList = new ArrayList<>();
+			ArrayList<Beneficiary> beneficiaries = br.getAllBeneficiary();
+
+			for(Beneficiary b: beneficiaries)
+				benNameList.add(b.getName() + " " + b.getNumber());
+
+			System.out.println(request.queryParams("name"));
+			model.put("greeted", benNameList);
+
+			return  render(model, "dashboard.hbs");
+		});
+
+		get("/dashboard/add", (request, response) -> {
+			Map<String, Object> model = new HashMap<>();
+
+			ArrayList<String> benNameList = new ArrayList<>();
+			ArrayList<Beneficiary> beneficiaries = br.getAllBeneficiary();
+
+			for(Beneficiary b: beneficiaries)
+				benNameList.add(b.getName() + " : " + b.getNumber());
+
+			model.put("greeted", benNameList);
+
+			return  render(model, "addForm.hbs");
+		});
+
+		post("/dashboard/add", (request, response) -> {
+			String name = request.queryParams("name");
+			String number = request.queryParams("number");
+
+			br.addBeneficiary(new Beneficiary(name, number));
+
+			response.redirect("/dashboard");
+
+			return  "";
+		});
+
+		get("/dashboard/delete", (request, response) -> {
+			Map<String, Object> model = new HashMap<>();
+
+			ArrayList<String> benNameList = new ArrayList<>();
+			ArrayList<Beneficiary> beneficiaries = br.getAllBeneficiary();
+
+			for(Beneficiary b: beneficiaries)
+				benNameList.add(b.getName());
+
+			model.put("greeted", benNameList);
+
+			return  render(model, "deleteForm.hbs");
+		});
+
+		post("/dashboard/delete", (request, response) -> {
+			Map<String, Object> model = new HashMap<>();
+
+			String name = request.queryParams("name");
+
+			br.deleteBenficiary(br.getBeneficiary(name));
+
+			response.redirect("/dashboard");
+
+			return  "";
+		});
+
+		get("/dashboard/purchase", (request, response) -> {
+			Map<String, Object> model = new HashMap<>();
+
+			return  render(model, "purchase.hbs");
+		});
+
+		get("/form", (request, response) -> {
+			Map<String, Object> model = new HashMap<>();
+
+			ArrayList<String> benNameList = new ArrayList<>();
+			ArrayList<Beneficiary> beneficiaries = br.getAllBeneficiary();
+
+			for(Beneficiary b: beneficiaries)
+				benNameList.add(b.getName());
+
+			model.put("greeted", benNameList);
+
+			return  render(model, "benForm.hbs");
 		});
 
 	}

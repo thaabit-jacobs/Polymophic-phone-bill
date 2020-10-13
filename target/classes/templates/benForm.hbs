@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="css/dash.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400&display=swap" rel="stylesheet">
+    <meta charset="utf-8">
+    <title>Billing</title>
+</head>
+
+<body>
+<header class="primary-header container group">
+    <section class="container">
+        <h1 class="logo">
+            <a href="index.html">Phone Bill</a>
+        </h1>
+    </section>
+
+    <nav class="nav primary-nav">
+        <a class="btn btn-alt btn-hero" href="#">Purchase</a>
+        <a class="btn btn-alt btn-hero" href="#">Billing</a>
+        <a class="btn btn-alt btn-hero" href="#">Add</a>
+    </nav>
+
+
+</header>
+
+
+
+<section class="row">
+    <div class="grid">
+        <h2>Beneficiary</h2>
+
+
+        <form action="/dashboard" method="POST">
+            {{#each greeted}}
+            <ul>
+                <li>
+                    <input type="radio" id={{this}} name="name" value={{this}}>
+                    <label for={{this}}><p id="ben-name">{{this}}</p></label><br>
+                </li>
+            </ul>
+            {{/each}}
+
+            <input class="btn btn-alt btn-hero" type="submit" value="Submit">
+        </form>
+
+
+    </div>
+</section>
+
+<footer class="primary-footer container group">
+    <small>&copy; T&J'S</small>
+</footer>
+</body>
+
+</html>

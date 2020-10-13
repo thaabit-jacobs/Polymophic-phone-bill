@@ -12,6 +12,7 @@ import net.phone.bill.db.BillResources;
 public class BeneficiaryTest {
     
     private Beneficiary ben = new Beneficiary("Thaabit", "0123456789");
+    private Beneficiary ben2 = new Beneficiary("Jacobs", "0123456789");
 
     private BillResources br ;
 
@@ -19,7 +20,7 @@ public class BeneficiaryTest {
 
         try{
             Class.forName("org.postgresql.Driver");
-            br = new BillResources(DriverManager.getConnection("jdbc:postgresql://localhost:5432/biller", "postgres", "1234"));
+            br = new BillResources(DriverManager.getConnection("jdbc:postgresql://localhost:5432/biller", "thaabit", "1234"));
         }catch(Exception e)
         {
             System.out.println("Test constructor");
@@ -102,6 +103,23 @@ public class BeneficiaryTest {
         ben.setBillTotal(50);
         br.addBeneficiary(ben);
         assertEquals(50, br.getBillTotal(ben));
+        br.clearBenTable();
+    }
+
+    @Test
+    void ShouldReturnBenObjectForUserName(){
+        ben.setBillTotal(50);
+        br.addBeneficiary(ben);
+        assertEquals("0123456789", br.getBeneficiary("Thaabit").getNumber());
+        br.clearBenTable();
+    }
+
+    @Test
+    void ShouldReturnAListOfUser(){
+        br.addBeneficiary(ben2);
+        br.addBeneficiary(ben);
+        assertTrue(br.getAllBeneficiary().get(0).getName().equals("Jacobs"));
+        assertTrue(br.getAllBeneficiary().get(1).getName().equals("Thaabit"));
         br.clearBenTable();
     }
 }
