@@ -181,6 +181,7 @@ public class PhoneBill {
 
 
 			model.put("total", "R" + bill.total());
+			ben.setBillTotal(br.getBeneficiary(purchaseName).getSmsTotal() + br.getBeneficiary(purchaseName).getDataTotal() + br.getBeneficiary(purchaseName).getPhoneTotal());
 			br.updateBillTotal(ben);
 
 			response.redirect("/");
@@ -216,6 +217,8 @@ public class PhoneBill {
 			String dataArray = "[" + br.getSmsTotal(ben) + ", " + br.getDataTotal(ben) + ", " + br.getPhoneTotal(ben) + "]";
 
 			model.put("data",  dataArray);
+			model.put("name",  purchaseName + ": " + br.getBeneficiary(purchaseName).getNumber());
+			model.put("total",  br.getBillTotal(br.getBeneficiary(purchaseName)));
 
 			return  render(model, "chart.hbs");
 		});
@@ -269,12 +272,6 @@ public class PhoneBill {
 			response.redirect("/");
 
 			return  "";
-		});
-
-		get("/purchase", (request, response) -> {
-			Map<String, Object> model = new HashMap<>();
-
-			return  render(model, "purchase.hbs");
 		});
 
 		get("/form", (request, response) -> {
