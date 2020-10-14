@@ -51,7 +51,7 @@ public class PhoneBill {
 		PhoneBill bill = new PhoneBill();
 		BillResources br = new BillResources(DriverManager.getConnection("jdbc:postgresql://localhost:5432/biller", "thaabit", "1234"));
 
-		
+		br.resetTable();
 
 		try{
 			Class.forName("org.postgresql.Driver");

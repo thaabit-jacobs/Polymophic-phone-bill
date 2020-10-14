@@ -34,6 +34,7 @@ public class BillResources {
     private final String  deleteBenefiaciaryQuery = "DELETE FROM beneficiaries WHERE name = ?";
     private final String  benefiaciariesQuery = "SELECT * FROM beneficiaries WHERE name = ?";
     private final String  getAllBenQuery = "SELECT * FROM beneficiaries";
+    private final String  tableReset = "UPDATE beneficiaries SET sms_total=0.00, data_total=0.00, phone_total=0.00, total_bill=0.00";
 
     public BillResources(Connection connection) {
         try {
@@ -319,6 +320,22 @@ public class BillResources {
         try{
             stmt = connection.createStatement();
             stmt.executeUpdate(clearBenTableQuery);
+            stmt.close();
+
+            return true;
+        } catch(SQLException se){
+            System.out.println("n the catch");
+            System.out.println("Could not add user");
+            se.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean resetTable(){
+        try{
+            stmt = connection.createStatement();
+            stmt.executeUpdate(tableReset);
             stmt.close();
 
             return true;
