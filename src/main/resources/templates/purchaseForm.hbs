@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dash.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400&display=swap" rel="stylesheet">
     <meta charset="utf-8">
     <title>Billing</title>
@@ -29,16 +29,22 @@
 
 <section class="row">
     <div class="grid">
-        <h2>Add Beneficiary</h2>
+        <h2>Beneficiary</h2>
 
-        <form action="/add" method="POST">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name"><br><br>
-            <label for="number">Number:</label>
-            <input type="text" id="number" name="number"><br><br>
+
+        <form action="/purchaseF" method="POST">
+            {{#each greeted}}
+                <ul>
+                    <li>
+                        <input type="radio" id={{this}} name="name" value={{this}}>
+                        <label for={{this}}><p id="ben-name">{{this}}</p></label><br>
+                    </li>
+                </ul>
+            {{/each}}
 
             <input class="btn btn-alt btn-hero" type="submit" value="Submit">
         </form>
+
 
     </div>
 </section>

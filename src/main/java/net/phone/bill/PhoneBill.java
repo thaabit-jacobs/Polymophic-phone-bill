@@ -21,6 +21,9 @@ import spark.template.handlebars.HandlebarsTemplateEngine;
 import static spark.Spark.*;
 
 public class PhoneBill {
+
+	public static String purchaseName;
+	public static String billingName;
 	
 	private double totalCost;
 	
@@ -48,6 +51,8 @@ public class PhoneBill {
 		PhoneBill bill = new PhoneBill();
 		BillResources br = new BillResources(DriverManager.getConnection("jdbc:postgresql://localhost:5432/biller", "thaabit", "1234"));
 
+		
+
 		try{
 			Class.forName("org.postgresql.Driver");
 
@@ -65,65 +70,6 @@ public class PhoneBill {
 
 		get("/", (request, response) -> {
 			Map<String, Object> model = new HashMap<>();
-			model.put("total", "R" + bill.total());
-
-			return  render(model, "index.hbs");
-		});
-
-		post("/", (request, response) -> {
-			Map<String, Object> model = new HashMap<>();
-			model.put("total", "R" + bill.total());
-
-			String smsCost = request.queryParams("smsCost");
-			String dataCost = request.queryParams("dataCost");
-			String phoneCost = request.queryParams("phoneCost");
-
-			if(smsCost != null)
-			{
-				BillAction purchase = new SmsBundle(Double.valueOf(smsCost).intValue(), 0.25);
-				bill.accept(purchase);
-
-				double currentCost = map.get("sms");
-				currentCost += purchase.totalCost();
-				map.put("sms", currentCost);
-			}
-			else if(dataCost != null)
-			{
-				BillAction purchase = new DataBundle(Double.parseDouble(dataCost));
-				bill.accept(purchase);
-
-				double currentCost = map.get("data");
-				currentCost += purchase.totalCost();
-				map.put("data", currentCost);
-			}
-			else
-			{
-				BillAction purchase = new PhoneCall(Double.parseDouble(phoneCost));
-				bill.accept(purchase);
-
-				double currentCost = map.get("phone");
-				currentCost += purchase.totalCost();
-				map.put("phone", currentCost);
-			}
-
-
-			model.put("total", "R" + bill.total());
-
-			return  render(model, "index.hbs");
-		});
-
-		get("/billing", (request, response) -> {
-			Map<String, Object> model = new HashMap<>();
-
-			String dataArray = "[" + map.get("sms") + ", " + map.get("data") + ", " + map.get("phone") + "]";
-
-			model.put("data",  dataArray);
-
-			return  render(model, "chart.hbs");
-		});
-
-		get("/dashboard", (request, response) -> {
-			Map<String, Object> model = new HashMap<>();
 
 			ArrayList<String> benNameList = new ArrayList<>();
 			ArrayList<Beneficiary> beneficiaries = br.getAllBeneficiary();
@@ -136,7 +82,7 @@ public class PhoneBill {
 			return  render(model, "dashboard.hbs");
 		});
 
-		post("/dashboard", (request, response) -> {
+		post("/", (request, response) -> {
 			Map<String, Object> model = new HashMap<>();
 
 			ArrayList<String> benNameList = new ArrayList<>();
@@ -145,13 +91,136 @@ public class PhoneBill {
 			for(Beneficiary b: beneficiaries)
 				benNameList.add(b.getName() + " " + b.getNumber());
 
-			System.out.println(request.queryParams("name"));
 			model.put("greeted", benNameList);
 
 			return  render(model, "dashboard.hbs");
 		});
 
-		get("/dashboard/add", (request, response) -> {
+		get("/purchaseF", (request, response) -> {
+			Map<String, Object> model = new HashMap<>();
+			ArrayList<String> benNameList = new ArrayList<>();
+			ArrayList<Beneficiary> beneficiaries = br.getAllBeneficiary();
+
+			for(Beneficiary b: beneficiaries)
+				benNameList.add(b.getName() + " : " + b.getNumber());
+
+			model.put("greeted", benNameList);
+			return  render(model, "purchaseForm.hbs");
+		});
+
+
+		post("/purchaseF", (request, response) -> {
+			purchaseName = request.queryParams("name");
+			System.out.println(purchaseName);
+
+			response.redirect("/purchase");
+
+			return "";
+		});
+
+		get("/purchase", (request, response) -> {
+			Map<String, Object> model = new HashMap<>();
+			model.put("total", "R" + br.getBillTotal(br.getBeneficiary(purchaseName)));
+
+			return  render(model, "purchase.hbs");
+		});
+
+		post("/purchase", (request, response) -> {
+			Map<String, Object> model = new HashMap<>();
+			Beneficiary ben = br.getBeneficiary(purchaseName);
+
+			String smsCost = request.queryParams("smsCost");
+			String dataCost = request.queryParams("dataCost");
+			String phoneCost = request.queryParams("phoneCost");
+
+			if(smsCost != null)
+			{
+				BillAction purchase = new SmsBundle(Double.valueOf(smsCost).intValue(), 0.25);
+				bill.accept(purchase);
+
+				double currentCost = map.get("sms");
+				currentCost += purchase.totalCost();
+
+				ben.addSmsTot(purchase);
+				ben.addBillTot(purchase);
+				br.updateSmsTotal(ben);
+				br.updateBillTotal(ben);
+
+				map.put("sms", currentCost);
+			}
+			else if(dataCost != null)
+			{
+				BillAction purchase = new DataBundle(Double.parseDouble(dataCost));
+				bill.accept(purchase);
+
+				double currentCost = map.get("data");
+				currentCost += purchase.totalCost();
+
+				ben.addDataTotal(purchase);
+				ben.addBillTot(purchase);
+				br.updateDataTotal(ben);
+				br.updateBillTotal(ben);
+
+				map.put("data", currentCost);
+			}
+			else
+			{
+				BillAction purchase = new PhoneCall(Double.parseDouble(phoneCost));
+				bill.accept(purchase);
+
+				double currentCost = map.get("phone");
+				currentCost += purchase.totalCost();
+
+				ben.addPhoneTot(purchase);
+				ben.addBillTot(purchase);
+				br.updatePhoneTotal(ben);
+				br.updateBillTotal(ben);
+
+				map.put("phone", currentCost);
+			}
+
+
+			model.put("total", "R" + bill.total());
+			br.updateBillTotal(ben);
+
+			response.redirect("/");
+
+			return  render(model, "purchase.hbs");
+		});
+
+		get("/billingF", (request, response) -> {
+			Map<String, Object> model = new HashMap<>();
+			ArrayList<String> benNameList = new ArrayList<>();
+			ArrayList<Beneficiary> beneficiaries = br.getAllBeneficiary();
+
+			for(Beneficiary b: beneficiaries)
+				benNameList.add(b.getName() + " : " + b.getNumber());
+
+			model.put("greeted", benNameList);
+			return  render(model, "billingForm.hbs");
+		});
+
+		post("/billingF", (request, response) -> {
+			billingName = request.queryParams("name");
+			System.out.println(billingName);
+
+			response.redirect("/billing");
+
+			return "";
+		});
+
+		get("/billing", (request, response) -> {
+			Map<String, Object> model = new HashMap<>();
+			Beneficiary ben = br.getBeneficiary(billingName);
+
+			String dataArray = "[" + br.getSmsTotal(ben) + ", " + br.getDataTotal(ben) + ", " + br.getPhoneTotal(ben) + "]";
+
+			model.put("data",  dataArray);
+
+			return  render(model, "chart.hbs");
+		});
+
+		get("/add", (request, response) -> {
 			Map<String, Object> model = new HashMap<>();
 
 			ArrayList<String> benNameList = new ArrayList<>();
@@ -165,18 +234,18 @@ public class PhoneBill {
 			return  render(model, "addForm.hbs");
 		});
 
-		post("/dashboard/add", (request, response) -> {
+		post("/add", (request, response) -> {
 			String name = request.queryParams("name");
 			String number = request.queryParams("number");
 
 			br.addBeneficiary(new Beneficiary(name, number));
 
-			response.redirect("/dashboard");
+			response.redirect("/");
 
 			return  "";
 		});
 
-		get("/dashboard/delete", (request, response) -> {
+		get("/delete", (request, response) -> {
 			Map<String, Object> model = new HashMap<>();
 
 			ArrayList<String> benNameList = new ArrayList<>();
@@ -190,19 +259,19 @@ public class PhoneBill {
 			return  render(model, "deleteForm.hbs");
 		});
 
-		post("/dashboard/delete", (request, response) -> {
+		post("/delete", (request, response) -> {
 			Map<String, Object> model = new HashMap<>();
 
 			String name = request.queryParams("name");
 
 			br.deleteBenficiary(br.getBeneficiary(name));
 
-			response.redirect("/dashboard");
+			response.redirect("/");
 
 			return  "";
 		});
 
-		get("/dashboard/purchase", (request, response) -> {
+		get("/purchase", (request, response) -> {
 			Map<String, Object> model = new HashMap<>();
 
 			return  render(model, "purchase.hbs");

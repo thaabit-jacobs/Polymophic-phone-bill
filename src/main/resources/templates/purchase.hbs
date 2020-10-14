@@ -30,7 +30,7 @@
 
             <h3>Sms</h3>
 
-            <form action="/dashboard/purchase" method="post">
+            <form action="/purchase" method="post">
                 <input type="number" name="smsCost" min="0" step="1">
 
                 <button class="btn btn-alt" name="submit">
@@ -47,7 +47,7 @@
 
         <h3>Data</h3>
 
-        <form action="/dashboard/purchase" method="post">
+        <form action="/purchase" method="post">
             <input type="number" name="dataCost"  min="0.00" step="5.25">
 
             <button class="btn btn-alt" name="submit">
@@ -62,7 +62,7 @@
 
         <h3>Phone</h3>
 
-        <form action="/dashboard/purchase" method="post">
+        <form action="/purchase" method="post">
             <input type="number" step="5" name="phoneCost" min="0.00" step="10">
 
             <button class="btn btn-alt" name="submit">
@@ -70,11 +70,6 @@
             </button>
         </form>
     </section>
-
-        <section class="total-col col-1-3">
-            <h3>Total cost</h3>
-            <p>{{total}}</p>
-        </section>
 
     </div>
 </section>
