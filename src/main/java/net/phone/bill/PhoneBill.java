@@ -75,7 +75,7 @@ public class PhoneBill {
 			ArrayList<Beneficiary> beneficiaries = br.getAllBeneficiary();
 
 			for(Beneficiary b: beneficiaries)
-				benNameList.add(b.getName() + " : " + b.getNumber());
+				benNameList.add(b.getName() + ": " + b.getNumber());
 
 			model.put("greeted", benNameList);
 
@@ -89,7 +89,7 @@ public class PhoneBill {
 			ArrayList<Beneficiary> beneficiaries = br.getAllBeneficiary();
 
 			for(Beneficiary b: beneficiaries)
-				benNameList.add(b.getName() + " " + b.getNumber());
+				benNameList.add(b.getName() + ": " + b.getNumber());
 
 			model.put("greeted", benNameList);
 
@@ -102,7 +102,7 @@ public class PhoneBill {
 			ArrayList<Beneficiary> beneficiaries = br.getAllBeneficiary();
 
 			for(Beneficiary b: beneficiaries)
-				benNameList.add(b.getName() + " : " + b.getNumber());
+				benNameList.add(b.getName() + ": " + b.getNumber());
 
 			model.put("greeted", benNameList);
 			return  render(model, "purchaseForm.hbs");
@@ -195,7 +195,7 @@ public class PhoneBill {
 			ArrayList<Beneficiary> beneficiaries = br.getAllBeneficiary();
 
 			for(Beneficiary b: beneficiaries)
-				benNameList.add(b.getName() + " : " + b.getNumber());
+				benNameList.add(b.getName() + ": " + b.getNumber());
 
 			model.put("greeted", benNameList);
 			return  render(model, "billingForm.hbs");
@@ -218,7 +218,7 @@ public class PhoneBill {
 
 			model.put("data",  dataArray);
 			model.put("name",  purchaseName + ": " + br.getBeneficiary(purchaseName).getNumber());
-			model.put("total",  br.getBillTotal(br.getBeneficiary(purchaseName)));
+			model.put("total",  "R"+br.getBillTotal(br.getBeneficiary(purchaseName)));
 
 			return  render(model, "chart.hbs");
 		});
@@ -230,7 +230,7 @@ public class PhoneBill {
 			ArrayList<Beneficiary> beneficiaries = br.getAllBeneficiary();
 
 			for(Beneficiary b: beneficiaries)
-				benNameList.add(b.getName() + " : " + b.getNumber());
+				benNameList.add(b.getName() + ": " + b.getNumber());
 
 			model.put("greeted", benNameList);
 
@@ -255,7 +255,7 @@ public class PhoneBill {
 			ArrayList<Beneficiary> beneficiaries = br.getAllBeneficiary();
 
 			for(Beneficiary b: beneficiaries)
-				benNameList.add(b.getName());
+				benNameList.add(b.getName() + ": " + b.getNumber());
 
 			model.put("greeted", benNameList);
 
@@ -281,7 +281,7 @@ public class PhoneBill {
 			ArrayList<Beneficiary> beneficiaries = br.getAllBeneficiary();
 
 			for(Beneficiary b: beneficiaries)
-				benNameList.add(b.getName());
+				benNameList.add(b.getName() + ": " + b.getNumber());
 
 			model.put("greeted", benNameList);
 
